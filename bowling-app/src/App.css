@@ -2,27 +2,138 @@
   text-align: center;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
+.content1 {
+  height: 300;
+  overflow: hidden;
 }
 
-.App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
+.content1 > h1 {
+  line-height: 100px;
+  font-family: Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  /* animation-duration: 2s;
+  animation-name: slidein; */
+}
+
+/* @keyframes slidein {
+  from {
+    margin-left: 100%;
+    width: 300%; 
+  }
+
+  to {
+    margin-left: 0%;
+    width: 100%;
+  }
+} */
+
+.content2 {
+  height: 850px;
+  justify-content: center;
+  align-content: center; 
+}
+
+.content2 > div {
+  padding: 50px;
+  justify-content: center;
+  align-content: center; 
+}
+
+.socialMed > .facebook {
+  line-height: 50px;
+  text-decoration: none;
+  /* justify-content: center; */
+  padding: 30px;
+}
+
+.socialMed > .email {
+  line-height: 50px;
+  text-decoration: none;
+  /* justify-content: center; */
+  padding: 30px;
+}
+/* img {
+  background-size: cover;
+} */
+
+#Calendar {
+  font-family: Verdana, Arial, Helvetica, Sans-serif;
+  width: 100%;
+  min-width: 700px;
+  padding: 25px 0 35px 35px;
+}
+#Calendar button, #Calendar select {
+  font-family: inherit;
+  font-size: 10pt;
+  border: none;
+  background-color: gray;
   color: white;
+  padding: 5px;
+  font-weight: bold;
+  box-sizing: border-box;
 }
-
-.App-title {
-  font-size: 1.5em;
+#Calendar button option, #Calendar select option {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  box-sizing: border-box;
+  display: block;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: 25px;
 }
-
-.App-intro {
-  font-size: large;
+#Calendar h1 {
+  margin: 0;
+  padding: 0;
+  line-height: 40pt;
+  font-size: 20pt;
+  max-width: 70%;
+  float: left;
 }
-
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+#Calendar .month-selector {
+  float: right;
+  margin-right: 2%;
+  margin-top: 10px;
+}
+#Calendar .day-of-month,
+#Calendar .day-of-week {
+  padding: 5px;
+  width: 14%;
+  display: inline-block;
+  box-sizing: border-box;
+}
+#Calendar .weekdays {
+  clear: both;
+}
+#Calendar .day-of-week {
+  font-size: 10pt;
+  color: white;
+  background-color: #333;
+}
+#Calendar .day-of-month {
+  border: 1px solid #eee;
+  height: 90px;
+  box-sizing: border-box;
+}
+#Calendar .day-of-month:first-child {
+  border-left: 2px solid #eee;
+}
+#Calendar .first-day-sunday {
+  margin-left: 0;
+}
+#Calendar .first-day-monday {
+  margin-left: 14%;
+}
+#Calendar .first-day-tuesday {
+  margin-left: 28%;
+}
+#Calendar .first-day-wednesday {
+  margin-left: 42%;
+}
+#Calendar .first-day-thursday {
+  margin-left: 56%;
+}
+#Calendar .first-day-friday {
+  margin-left: 70%;
+}
+#Calendar .first-day-saturday {
+  margin-left: 84%;
 }
