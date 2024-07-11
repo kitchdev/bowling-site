@@ -16,7 +16,9 @@ const BookingCalendar: React.FC = () => {
     const fetchSlots = async () => {
       if (date) {
         const response = await fetch(
-          `/api/available-slots?date=${date.toISOString().split("T")[0]}`
+          `/api/available-slots?date=${
+            date.toISOString().split("T")[0]
+          }&noLanes=2`
         );
         const { result } = await response.json();
         setSlots(result);

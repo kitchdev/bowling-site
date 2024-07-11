@@ -1,57 +1,78 @@
 // pages/api/available-slots.ts
 import { NextApiRequest, NextApiResponse } from "next";
-import { Pool } from "pg";
+import { NextRequest, NextResponse } from "next/server";
+import db from "@/app/controllers/pgConnector";
+import isDateBlocked from "@/app/helpers/isDateBlocked";
+import get30MinIntervals from "@/app/helpers/get30MinuteIntervals";
 
-const pool = new Pool({
-  user: "postgres",
-  host: "localhost",
-  database: "bowling",
-  password: "postgres",
-  port: 5432,
-});
-
-type Slot = {
-  slot_start: string;
-  slot_end: string;
-};
-
-export async function GET(req: NextApiRequest) {
-  const searchParams = req.nextUrl.searchParams;
-  const date = searchParams.get("date");
-  console.log(date);
+export async function GET(req: NextApiRequest): NextApiResponse {
+  const { date, noLanes } = Object.fromEntries(req.nextUrl.searchParams);
+  console.log({ date, noLanes });
 
   if (!date || typeof date !== "string") {
-    res.status(400).json({ error: "Invalid date parameter" });
+    return NextResponse.json(
+      { error: "Invalid date parameter" },
+      { status: 422 }
+    );
     return;
   }
+  if (!noLanes) {
+    return NextResponse.json(
+      { error: "Number of lanes must be provided" },
+      { status: 422 }
+    );
+  }
+  const client = await db.pool.connect();
 
   try {
-    const result = await pool.query<Slot>(
-      `
-            WITH all_slots AS (
-                SELECT gs.slot_start, gs.slot_end
-                FROM generate_time_slots($1::timestamp, $2::timestamp, 30) AS gs
-            ),
-            reserved_slots AS (
-                SELECT start_time, end_time
-                FROM reservations
-                WHERE start_time >= $1::timestamp AND end_time <= $2::timestamp
-            )
-            SELECT slot_start, slot_end
-            FROM all_slots
-            WHERE NOT EXISTS (
-                SELECT 1
-                FROM reserved_slots
-                WHERE all_slots.slot_start < reserved_slots.end_time
-                  AND all_slots.slot_end > reserved_slots.start_time
-            );
-        `,
-      [`${date} 09:00:00`, `${date} 22:00:00`]
+    if (await isDateBlocked(client, date)) {
+      return NextResponse.json({ message: "The selected date is blocked" });
+    }
+
+    const dayOfWeek = new Date(date).toLocaleString("en-US", {
+      weekday: "long",
+    });
+
+    const availabilityRes = await client.query(
+      `SELECT * FROM Availability
+          WHERE day_of_week = $1`,
+      [dayOfWeek]
     );
 
-    return Response.json({ result: result.rows });
+    if (availabilityRes.rows.length === 0) {
+      return [];
+    }
+
+    const availabilityTimeSlots = availabilityRes.rows.reduce((acc, slot) => {
+      acc.push(...get30MinIntervals(slot.start_time, slot.end_time));
+      return acc;
+    }, []);
+
+    const { rows } = await client.query(
+      `SELECT reservation_time, reservation_endtime, duration_minutes, number_of_lanes FROM Reservations r
+          WHERE reservation_date = $1`,
+      [date]
+    );
+    console.log(rows);
+
+    // pretty non-performant, but atleast we no n of availabletimeslots won't be too large
+    const availabilityTimeHash = availabilityTimeSlots.map((timeSlot) => {
+      const newSlot = { [timeSlot]: 8 };
+      for (let i = 0; i < rows.length; i++) {
+        if (
+          timeSlot >= rows[i].reservation_time &&
+          timeSlot < rows[i].reservation_endtime
+        ) {
+          newSlot[timeSlot] = newSlot[timeSlot] - rows[i].number_of_lanes;
+        }
+      }
+      return newSlot;
+    });
+
+    console.log(availabilityTimeHash);
+    return NextResponse.json(availabilityTimeHash);
   } catch (error) {
     console.error(error);
-    // res.status(500).json({ error: "Internal Server Error" });
+    throw new Error({ error: error.message });
   }
 }
