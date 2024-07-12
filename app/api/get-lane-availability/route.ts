@@ -44,7 +44,7 @@ export async function GET(req: NextApiRequest): NextApiResponse {
     );
 
     if (availabilityRes.rows.length === 0) {
-      return [];
+      return NextResponse.json({ message: "no lanes available" });
     }
 
     const reservationsRes = await client.query(
@@ -73,5 +73,7 @@ export async function GET(req: NextApiRequest): NextApiResponse {
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: error.message });
+  } finally {
+    client.release();
   }
 }

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { getServerSession } from "next-auth/next";
 import { Inter } from "next/font/google";
 import ThemeRegistry from "@/components/ThemeRegistry/ThemeRegistry";
-import "@/styles/globals.css";
 import { Box } from "@mui/material";
 
 const inter = Inter({

@@ -28,10 +28,14 @@ export async function GET(req: NextApiRequest): NextApiResponse {
     if (await isDateBlocked(client, date)) {
       return NextResponse.json({ message: "The selected date is blocked" });
     }
+    console.log(date);
 
     const dayOfWeek = new Date(date).toLocaleString("en-US", {
+      timeZone: "UTC",
       weekday: "long",
     });
+
+    console.log(dayOfWeek);
 
     const availabilityRes = await client.query(
       `SELECT * FROM Availability
@@ -74,5 +78,7 @@ export async function GET(req: NextApiRequest): NextApiResponse {
   } catch (error) {
     console.error(error);
     throw new Error({ error: error.message });
+  } finally {
+    client.release();
   }
 }
