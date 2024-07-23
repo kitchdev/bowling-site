@@ -1,9 +1,9 @@
 // pages/api/available-slots.ts
 import { NextApiRequest, NextApiResponse } from "next";
 import { NextRequest, NextResponse } from "next/server";
-import db from "@/app/controllers/pgConnector";
-import isDateBlocked from "@/app/helpers/isDateBlocked";
-import get30MinIntervals from "@/app/helpers/get30MinuteIntervals";
+import db from "@/app/[lang]/controllers/pgConnector";
+import isDateBlocked from "@/app/[lang]/helpers/isDateBlocked";
+import get30MinIntervals from "@/app/[lang]/helpers/get30MinuteIntervals";
 
 export async function GET(req: NextApiRequest): NextApiResponse {
   const { date, noLanes } = Object.fromEntries(req.nextUrl.searchParams);

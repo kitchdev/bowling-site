@@ -1,6 +1,6 @@
 // app/reserve/page.tsx
 import React from "react";
-import ReservationForm from "../../components/ReservationForm";
+import ReservationForm from "../components/ReservationForm";
 
 const ReservePage: React.FC = () => {
   return (

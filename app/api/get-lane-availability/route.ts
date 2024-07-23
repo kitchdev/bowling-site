@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { NextRequest, NextResponse } from "next/server";
-import db from "@/app/controllers/pgConnector";
-import isDateBlocked from "@/app/helpers/isDateBlocked";
+import db from "@/app/[lang]/controllers/pgConnector";
+import isDateBlocked from "@/app/[lang]/helpers/isDateBlocked";
 
 export async function GET(req: NextApiRequest): NextApiResponse {
   const { date, time, duration } = Object.fromEntries(req.nextUrl.searchParams);

@@ -17,7 +17,7 @@ import {
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { FixedSizeList, ListChildComponentProps } from "react-window";
-import TimeList from "@/components/List";
+import TimeList from "@/app/[lang]/components/List";
 
 type Slot = {
   slot_start: string;
