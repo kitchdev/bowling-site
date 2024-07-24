@@ -24,7 +24,7 @@ type Slot = {
   slot_end: string;
 };
 
-const BookingCalendar: React.FC = () => {
+export default function Calendar() {
   const [date, setDate] = useState<string | null>(
     new Date().toISOString().split("T")[0]
   );
@@ -150,6 +150,4 @@ const BookingCalendar: React.FC = () => {
       </LocalizationProvider>
     </>
   );
-};
-
-export default BookingCalendar;
+}

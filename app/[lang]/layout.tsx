@@ -7,6 +7,7 @@ import { Suspense } from "react";
 import ThemeRegistry from "@/app/[lang]/components/ThemeRegistry/ThemeRegistry";
 import AppBar from "@/app/[lang]/components/AppBar";
 import { Box } from "@mui/material";
+import { getDictionary } from "@/get-dictionaries";
 
 export async function generateStaticParams() {
   return i18n.locales.map((locale) => ({ lang: locale }));
@@ -38,12 +39,12 @@ export default async function RootLayout({
   params: { lang: Locale };
 }) {
   const session = await getServerSession();
-
+  const dictionary = getDictionary(params.lang);
   return (
     <ThemeRegistry>
       <html lang={params.lang}>
         <body className={inter.variable}>
-          {session && <AppBar {...{ session }} />}
+          <AppBar lang={params.lang} session={session} />
           <Toaster />
           <Box
             display="flex"

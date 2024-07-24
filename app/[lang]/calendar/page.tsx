@@ -1,6 +1,6 @@
 import React from "react";
-import BookingCalendar from "@/app/[lang]/components/BookCalendar";
 import { getServerSession } from "next-auth";
+import BookingCalendar from "@/app/[lang]/components/BookCalendar";
 import Login from "@/app/[lang]/components/Login";
 
 const CalendarPage: React.FC = async () => {

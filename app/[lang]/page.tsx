@@ -14,14 +14,22 @@ export default async function Home({
 }) {
   const session = await getServerSession();
   const dictionary = await getDictionary(lang);
-  console.log(lang);
 
   if (!session) {
     return <Login />;
   }
   return (
     <>
-      <HomePage locale={lang} />
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="100vh"
+      >
+        <Box>
+          <Typography>{dictionary["homePage"].welcome}</Typography>
+        </Box>
+      </Box>
     </>
   );
 }

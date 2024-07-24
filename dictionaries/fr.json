@@ -1,9 +1,9 @@
 {
-  "server-component": {
+  "homePage": {
     "welcome": "Bienvenue"
   },
-  "counter": {
-    "increment": "Increment",
-    "decrement": "Decrement"
+  "appBar": {
+    "reserve": "Réservez aujourd'hui",
+    "home": "Accueil"
   }
 }
