@@ -5,5 +5,10 @@
   "appBar": {
     "reserve": "Réservez aujourd'hui",
     "home": "Accueil"
+  },
+  "calendar": {
+    "title": "Calendrier de Réservation des Allées",
+    "timeDropDown": "Combien d'allées (Max 5 par)",
+    "tileSlots": "Plages horaires disponibles"
   }
 }

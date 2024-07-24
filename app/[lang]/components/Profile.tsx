@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Box, Typography, List, ListItem } from "@mui/material";
+import { Box, Typography, List, ListItem, Card } from "@mui/material";
 
 const mockUserData = {
   name: "Mat Kitching",
@@ -16,7 +16,7 @@ const mockUserData = {
 export default function Profile() {
   return (
     <>
-      <Box>
+      <Card height={200} width={200}>
         <Typography>User Profile:</Typography>
         <List>
           {Object.entries(mockUserData).map(([key, value], i) => (
@@ -25,7 +25,7 @@ export default function Profile() {
             </ListItem>
           ))}
         </List>
-      </Box>
+      </Card>
     </>
   );
 }

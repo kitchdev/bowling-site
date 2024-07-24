@@ -1,8 +1,14 @@
 "use client";
 import { useEffect, useState } from "react";
+import { FixedSizeList, ListChildComponentProps } from "react-window";
+import { usePathname } from "next/navigation";
 import { DateCalendar } from "@mui/x-date-pickers";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import "dayjs/locale/fr";
 import {
   Box,
+  Card,
   Typography,
   List,
   ListItem,
@@ -14,10 +20,8 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { FixedSizeList, ListChildComponentProps } from "react-window";
 import TimeList from "@/app/[lang]/components/List";
+import { getDictionary } from "@/get-dictionaries";
 
 type Slot = {
   slot_start: string;
@@ -25,6 +29,9 @@ type Slot = {
 };
 
 export default function Calendar() {
+  const currentLang = usePathname().split("/")[1];
+  const dictionary = getDictionary(currentLang);
+
   const [date, setDate] = useState<string | null>(
     new Date().toISOString().split("T")[0]
   );
@@ -94,57 +101,97 @@ export default function Calendar() {
 
   return (
     <>
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <Box display="flex">
-          <DateCalendar onChange={(newDate) => handleDateChange(newDate)} />
-          <Box
-            sx={{
-              width: 300,
-              height: 400,
-              bgcolor: "background.paper",
-              marginLeft: 2,
-            }}
-          >
-            <Box>
-              <FormControl fullWidth>
-                <InputLabel
-                  id="number-select-label"
-                  sx={{
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    maxWidth: "80%",
-                    height: "100%",
-                  }}
-                >
-                  How many lanes (Max 5 per)
-                </InputLabel>
-                <Select
-                  labelId="number-select-label"
-                  id="number-select"
-                  value={selectedLaneNumber}
-                  label="Number"
-                  onChange={handleLaneNumberChange}
-                >
-                  {laneNumbers.map((laneNumber) => (
-                    <MenuItem key={laneNumber} value={laneNumber}>
-                      {laneNumber}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+      <LocalizationProvider
+        dateAdapter={AdapterDayjs}
+        adapterLocale={currentLang}
+      >
+        <Box display="flex" flexDirection="column" alignItems="center">
+          <Box sx={{ pb: 5 }}>
+            <Typography variant="h5">{dictionary["calendar"].title}</Typography>
+          </Box>
+          <Box display="flex" alignItems="flex-start" mt={2}>
+            <Box sx={{ pr: 5 }}>
+              <DateCalendar onChange={(newDate) => handleDateChange(newDate)} />
             </Box>
-            <Typography>Time slots available</Typography>
-            {selectedLaneNumber && slots.length > 0 && (
-              <FixedSizeList
-                height={400}
-                width={300}
-                itemSize={50}
-                itemCount={slots.length}
-                overscanCount={5}
-              >
-                {renderRow}
-              </FixedSizeList>
-            )}
+            <Box
+              sx={{
+                width: 300,
+                height: 400,
+                bgcolor: "background.paper",
+                marginLeft: 2,
+              }}
+            >
+              <Box sx={{ pb: 5 }}>
+                <FormControl fullWidth>
+                  <InputLabel
+                    id="number-select-label"
+                    sx={{
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      maxWidth: "80%",
+                      height: "100%",
+                    }}
+                  >
+                    {dictionary["calendar"].timeDropDown}
+                  </InputLabel>
+                  <Select
+                    labelId="number-select-label"
+                    id="number-select"
+                    value={selectedLaneNumber}
+                    label="Number"
+                    onChange={handleLaneNumberChange}
+                  >
+                    {laneNumbers.map((laneNumber) => (
+                      <MenuItem key={laneNumber} value={laneNumber}>
+                        {laneNumber}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Box>
+              <Box sx={{ pb: 5 }}>
+                <FormControl fullWidth>
+                  <InputLabel
+                    id="number-select-label"
+                    sx={{
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      maxWidth: "80%",
+                      height: "100%",
+                    }}
+                  >
+                    {dictionary["calendar"].timeDropDown}
+                  </InputLabel>
+                  <Select
+                    labelId="number-select-label"
+                    id="number-select"
+                    value={selectedLaneNumber}
+                    label="Number"
+                    onChange={handleLaneNumberChange}
+                  >
+                    {laneNumbers.map((laneNumber) => (
+                      <MenuItem key={laneNumber} value={laneNumber}>
+                        {laneNumber}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Box>
+              <Card elevation={10}>
+                {selectedLaneNumber && slots.length > 0 && (
+                  <FixedSizeList
+                    height={400}
+                    width={300}
+                    itemSize={50}
+                    itemCount={slots.length}
+                    overscanCount={5}
+                  >
+                    {renderRow}
+                  </FixedSizeList>
+                )}
+              </Card>
+              {/* <Typography>{dictionary["calendar"].tileSlots}</Typography> */}
+            </Box>
           </Box>
         </Box>
       </LocalizationProvider>

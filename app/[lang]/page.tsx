@@ -2,6 +2,7 @@ import { useState } from "react";
 import { getServerSession } from "next-auth";
 import { Box, Typography } from "@mui/material";
 import Login from "@/app/[lang]/components/Login";
+import Login2 from "@/app/[lang]/components/Login2";
 import HomePage from "@/app/[lang]/components/HomePage";
 import { Locale } from "@/i18n-config";
 import { getDictionary } from "@/get-dictionaries";
@@ -16,7 +17,7 @@ export default async function Home({
   const dictionary = await getDictionary(lang);
 
   if (!session) {
-    return <Login />;
+    return <Login2 />;
   }
   return (
     <>
