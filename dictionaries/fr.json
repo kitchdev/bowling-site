@@ -1,0 +1,9 @@
+{
+  "homePage": {
+    "welcome": "Bienvenue"
+  },
+  "appBar": {
+    "reserve": "Réservez aujourd'hui",
+    "home": "Accueil"
+  }
+}
