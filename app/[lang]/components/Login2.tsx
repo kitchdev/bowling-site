@@ -1,6 +1,9 @@
 "use client";
 import React from "react";
 import {
+  Checkbox,
+  FormControl,
+  FormControlLabel,
   Grid,
   Paper,
   Avatar,
@@ -10,8 +13,6 @@ import {
   Link,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import LoadingDots from "@/app/[lang]/components/LoadingDots";
@@ -37,21 +38,23 @@ const Login = () => {
           </Avatar>
           <h2>Sign In</h2>
         </Grid>
-        <TextField
-          label="Username"
-          placeholder="Enter username"
-          variant="outlined"
-          fullWidth
-          required
-        />
-        <TextField
-          label="Password"
-          placeholder="Enter password"
-          type="password"
-          variant="outlined"
-          fullWidth
-          required
-        />
+        <FormControl>
+          <TextField
+            label="Username"
+            placeholder="Enter username"
+            variant="outlined"
+            fullWidth
+            required
+          />
+          <TextField
+            label="Password"
+            placeholder="Enter password"
+            type="password"
+            variant="outlined"
+            fullWidth
+            required
+          />
+        </FormControl>
         <FormControlLabel
           control={<Checkbox name="checkedB" color="primary" />}
           label="Remember me"
