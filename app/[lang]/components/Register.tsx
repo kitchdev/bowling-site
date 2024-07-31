@@ -3,51 +3,102 @@ import { useState, useRef } from "react";
 import { set, useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { Box, Button, Grid, Paper, TextField } from "@mui/material";
+import {
+  Box,
+  Button,
+  Grid,
+  IconButton,
+  InputAdornment,
+  Paper,
+  TextField,
+} from "@mui/material";
 import LoadingDots from "@/app/[lang]/components/LoadingDots";
+import * as Yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 export default function Register() {
-  const passValEl = useRef(null);
   const [loading, setLoading] = useState(false);
-  const [isPassValid, setIsPassValid] = useState(false);
-  const [currPassword, setCurrPassword] = useState("");
-  const [isPassVerifActive, setPassVerifActive] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showCpassword, setShowCpassword] = useState(false);
 
   const router = useRouter();
-  const { register, handleSubmit, watch } = useForm();
+
+  let password: string;
+
+  const phoneRegExp =
+    /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
+
+  const formSchema = Yup.object().shape({
+    email: Yup.string().required("Email is required"),
+    password: Yup.string()
+      .required("Password is required")
+      .min(4, "Password length should be at least 4 characters")
+      .max(12, "Password cannot exceed more than 12 characters"),
+    cpassword: Yup.string()
+      .required("Confirm Password is required")
+      .min(4, "Password length should be at least 4 characters")
+      .max(12, "Password cannot exceed more than 12 characters")
+      .oneOf([Yup.ref("password")], "Passwords do not match"),
+    name: Yup.string().required("Name is required"),
+    phone_number: Yup.string().matches(
+      phoneRegExp,
+      "Phone number is not valid"
+    ),
+  });
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+    reset,
+  } = useForm({
+    mode: "onTouched",
+    resolver: yupResolver(formSchema),
+  });
+  password = watch("password", "");
 
   const handleFormSubmit = async (formData: any) => {
     const { name, email, password, phone_number } = formData;
     setLoading(true);
-    const response = await fetch("/api/auth/register", {
-      method: "POST",
-      body: JSON.stringify({
-        name,
-        email,
-        password,
-        phone_number,
-      }),
-    });
-    console.log(response);
-  };
-
-  const handleCurrentPassword = (event, value, reason) => {
-    setCurrPassword(e.target.value);
-  };
-
-  const handlePasswordVerif = (password) => {
-    console.log(currPassword);
-    console.log(password);
-    if (handlePasswordVerif === currPassword) {
-      setIsPassValid(true);
+    try {
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+          phone_number,
+        }),
+      });
+      console.log(response);
+      toast("User successfully created");
+      router.push("/");
+    } catch (err: unknown) {
+      console.log(err);
+      toast(err.message);
+      reset();
     }
+  };
+
+  const handleClickShowPassword = (type: string) => {
+    type === "password"
+      ? setShowPassword(!showPassword)
+      : setShowCpassword(!showCpassword);
+  };
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
   };
 
   const paperStyle = {
     padding: 20,
-    height: "70vh",
-    width: 280,
-    margin: "20px auto",
+    height: "75vh",
+    width: 450,
+    margin: "120px auto 0 auto",
   };
 
   const btnstyle = loading
@@ -59,59 +110,104 @@ export default function Register() {
       }
     : { margin: "8px 0" };
   return (
-    <Grid component="form" onSubmit={handleSubmit(handleFormSubmit)}>
-      <Paper elevation={10} style={paperStyle}>
-        <Grid align="center" pb={5}>
+    <Grid
+      container
+      spacing={2}
+      component="form"
+      onSubmit={handleSubmit(handleFormSubmit)}
+      align="center"
+    >
+      <Paper align="center" elevation={10} style={paperStyle}>
+        <Grid item xs={4} md={10} pb={1}>
           <h2>Register</h2>
           <TextField
-            pb={2}
             label="Email"
             placeholder="Enter email"
             variant="outlined"
+            type="email"
             fullWidth
             required
             {...register("email")}
           >
             Email
           </TextField>
+        </Grid>
+        <Grid item xs={4} md={10} pb={1}>
           <TextField
             label="Password"
             placeholder="Enter password"
-            type="password"
             autoComplete="current-password"
             variant="outlined"
             fullWidth
             required
+            type={showPassword ? "text" : "password"}
+            error={!!errors.password}
+            helperText={errors.password?.message}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="start">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={() => handleClickShowPassword("password")}
+                    onMouseDown={handleMouseDownPassword}
+                  >
+                    {showPassword ? <Visibility /> : <VisibilityOff />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
             {...register("password")}
           >
             Password
           </TextField>
+        </Grid>
+        <Grid item xs={4} md={10} pb={1}>
           <TextField
             label="Verify Password"
             placeholder="Enter password"
-            type="password"
             variant="outlined"
             fullWidth
             required
-            error={!isPassValid}
-            {...register("verifyPassword")}
+            type={showCpassword ? "text" : "password"}
+            error={!!errors.cpassword}
+            helperText={errors.cpassword?.message}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="start">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={() => handleClickShowPassword("cpassword")}
+                    onMouseDown={handleMouseDownPassword}
+                  >
+                    {showCpassword ? <Visibility /> : <VisibilityOff />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+            {...register("cpassword")}
           >
             Password
           </TextField>
+        </Grid>
+        <Grid item xs={4} md={10} pb={1}>
           <TextField
             label="Name"
             placeholder="Enter name"
             variant="outlined"
+            type="text"
             fullWidth
             required
             {...register("name")}
           >
             Name
           </TextField>
+        </Grid>
+        <Grid item xs={4} md={10} pb={1}>
           <TextField
             label="Phone"
             placeholder="Enter phone number"
             variant="outlined"
+            type="text"
             fullWidth
             required
             {...register("phone_number")}
@@ -119,6 +215,7 @@ export default function Register() {
             Phone Number
           </TextField>
         </Grid>
+
         <Box>
           <Button
             type="submit"

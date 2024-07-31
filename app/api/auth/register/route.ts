@@ -13,9 +13,9 @@ export async function POST(request: Request) {
     );
     console.log({ rows });
     return NextResponse.json({ message: "successfully created new user" });
-  } catch (err) {
+  } catch (err: any) {
     console.error(err);
-    return NextResponse.json({ message: "error registering new user" });
+    return NextResponse.json({ error: err?.message }, { status: 500 });
   } finally {
     await client.release();
   }
