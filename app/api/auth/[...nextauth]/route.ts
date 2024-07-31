@@ -1,6 +1,6 @@
 import NextAuth, { type NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import db from "@/app/[lang]/controllers/pgConnector";
+import db from "@/app/controllers/pgConnector";
 import { compare } from "bcrypt";
 
 export const authOptions: NextAuthOptions = {

@@ -1,85 +1,115 @@
 "use client";
-import { useState } from "react";
+import React from "react";
+import {
+  Box,
+  Checkbox,
+  FormControl,
+  FormControlLabel,
+  Grid,
+  Paper,
+  Avatar,
+  TextField,
+  Button,
+  Typography,
+  Link,
+} from "@mui/material";
 import { signIn } from "next-auth/react";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { useState } from "react";
 import LoadingDots from "@/app/[lang]/components/LoadingDots";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { Box } from "@mui/material";
+import { useForm } from "react-hook-form";
 
-export default function Form() {
+export default function Login() {
   const [loading, setLoading] = useState(false);
+
   const router = useRouter();
 
+  const { register, handleSubmit } = useForm();
+
+  const handleFormSubmit = (formData: any) => {
+    console.log(typeof formData.password);
+    setLoading(true);
+    signIn("credentials", {
+      redirect: false,
+      email: formData.email,
+      password: formData.password,
+      // @ts-ignore
+    }).then(({ error }) => {
+      if (error) {
+        setLoading(false);
+        toast.error(error);
+      } else {
+        router.refresh();
+      }
+    });
+  };
+
+  const paperStyle = {
+    padding: 20,
+    height: "70vh",
+    width: 280,
+    margin: "20px auto",
+  };
+
+  const avatarStyle = { backgroundColor: "#013162" };
+
+  const btnstyle = loading
+    ? { margin: "8px 0", border: "gray", bg: "gray", height: "36.5px" }
+    : { margin: "8px 0" };
+
   return (
-    <Box
-      padding={{
-        xs: 2,
-        md: 8,
-      }}
-    >
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          setLoading(true);
-          signIn("credentials", {
-            redirect: false,
-            email: e.currentTarget.email.value,
-            password: e.currentTarget.password.value,
-            // @ts-ignore
-          }).then(({ error }) => {
-            if (error) {
-              setLoading(false);
-              toast.error(error);
-            } else {
-              router.refresh();
-            }
-          });
-        }}
-        className="flex flex-col space-y-4 py-4 px-4"
-      >
-        <div>
-          <label
-            htmlFor="email"
-            className="block text-xs text-gray-600 uppercase"
-          >
-            Email Address
-          </label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            placeholder="panic@thedis.co"
-            autoComplete="email"
+    <Grid component="form" onSubmit={handleSubmit(handleFormSubmit)}>
+      <Paper elevation={10} style={paperStyle}>
+        <Grid align="center">
+          <Avatar style={avatarStyle}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <h2>Sign In</h2>
+          <TextField
+            label="Email"
+            placeholder="Enter email"
+            variant="outlined"
+            fullWidth
             required
-            className="mt-1 block w-full appearance-none  border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-black focus:outline-none focus:ring-black sm:text-sm"
+            {...register("email")}
           />
-        </div>
-        <div>
-          <label
-            htmlFor="password"
-            className="block text-xs text-gray-600 uppercase"
-          >
-            Password
-          </label>
-          <input
-            id="password"
-            name="password"
+          <TextField
+            label="Password"
+            placeholder="Enter password"
             type="password"
+            variant="outlined"
+            fullWidth
             required
-            className="mt-1 block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-black focus:outline-none focus:ring-black sm:text-sm"
+            {...register("password")}
           />
-        </div>
-        <button
+        </Grid>
+        <FormControlLabel
+          control={<Checkbox name="checkedB" color="primary" />}
+          label="Remember me"
+        />
+        <Button
+          pb={5}
+          type="submit"
+          color="primary"
+          variant="contained"
           disabled={loading}
-          className={`${
-            loading
-              ? "cursor-not-allowed border-gray-200 bg-gray-100"
-              : "border-black bg-black text-white hover:bg-white hover:text-black"
-          } flex h-10 w-full items-center justify-center rounded-md border text-sm transition-all focus:outline-none`}
+          style={btnstyle}
+          fullWidth
         >
-          {loading ? <LoadingDots /> : <p>Sign In</p>}
-        </button>
-      </form>
-    </Box>
+          {loading ? <LoadingDots /> : "Sign In"}
+        </Button>
+        <Box align="center">
+          <Typography pb={5}>
+            <Link href="#">Forgot password?</Link>
+          </Typography>
+          <Typography>Don't have an account?</Typography>
+          <Link align="center" href="register">
+            Sign Up
+          </Link>
+        </Box>
+      </Paper>
+    </Grid>
   );
 }

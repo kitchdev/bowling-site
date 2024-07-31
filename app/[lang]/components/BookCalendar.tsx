@@ -20,7 +20,6 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
-import TimeList from "@/app/[lang]/components/List";
 import { getDictionary } from "@/get-dictionaries";
 
 type Slot = {
@@ -149,7 +148,7 @@ export default function Calendar() {
                   </Select>
                 </FormControl>
               </Box>
-              <Box sx={{ pb: 5 }}>
+              {/* <Box sx={{ pb: 5 }}>
                 <FormControl fullWidth>
                   <InputLabel
                     id="number-select-label"
@@ -176,8 +175,8 @@ export default function Calendar() {
                     ))}
                   </Select>
                 </FormControl>
-              </Box>
-              <Card elevation={10}>
+              </Box> */}
+              <Card>
                 {selectedLaneNumber && slots.length > 0 && (
                   <FixedSizeList
                     height={400}
