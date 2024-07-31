@@ -5,7 +5,7 @@ import db from "@/app/controllers/pgConnector";
 import isDateBlocked from "@/app/helpers/isDateBlocked";
 import get30MinIntervals from "@/app/helpers/get30MinuteIntervals";
 
-export async function GET(req: NextApiRequest): NextApiResponse {
+export async function GET(req: NextApiRequest): Promise<NextApiResponse> {
   const { date, noLanes } = Object.fromEntries(req.nextUrl.searchParams);
   console.log({ date, noLanes });
 
@@ -44,7 +44,7 @@ export async function GET(req: NextApiRequest): NextApiResponse {
     );
 
     if (availabilityRes.rows.length === 0) {
-      return [];
+      return NextResponse.json([]);
     }
 
     const availabilityTimeSlots = availabilityRes.rows.reduce((acc, slot) => {

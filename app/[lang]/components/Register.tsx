@@ -3,7 +3,7 @@ import { useState, useRef } from "react";
 import { set, useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { Box, Button, Grid, Paper, TextField, Typography } from "@mui/material";
+import { Box, Button, Grid, Paper, TextField } from "@mui/material";
 import LoadingDots from "@/app/[lang]/components/LoadingDots";
 
 export default function Register() {
@@ -14,7 +14,7 @@ export default function Register() {
   const [isPassVerifActive, setPassVerifActive] = useState(false);
 
   const router = useRouter();
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, watch } = useForm();
 
   const handleFormSubmit = async (formData: any) => {
     const { name, email, password, phone_number } = formData;
@@ -31,15 +31,14 @@ export default function Register() {
     console.log(response);
   };
 
-  const handleCurrentPassword = (e) => {
-    console.log("bee");
+  const handleCurrentPassword = (event, value, reason) => {
     setCurrPassword(e.target.value);
   };
 
-  const handlePasswordVerif = (e) => {
+  const handlePasswordVerif = (password) => {
     console.log(currPassword);
-    console.log(e.target.value);
-    if (e.target.value === currPassword) {
+    console.log(password);
+    if (handlePasswordVerif === currPassword) {
       setIsPassValid(true);
     }
   };
@@ -71,7 +70,6 @@ export default function Register() {
             variant="outlined"
             fullWidth
             required
-            onChange={(e) => handleCurrentPassword(e)}
             {...register("email")}
           >
             Email
@@ -84,7 +82,6 @@ export default function Register() {
             variant="outlined"
             fullWidth
             required
-            onChange={(e) => handleCurrentPassword(e)}
             {...register("password")}
           >
             Password
@@ -96,9 +93,7 @@ export default function Register() {
             variant="outlined"
             fullWidth
             required
-            ref={passValEl}
             error={!isPassValid}
-            onChange={handlePasswordVerif}
             {...register("verifyPassword")}
           >
             Password

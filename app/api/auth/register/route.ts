@@ -2,21 +2,20 @@ import { NextResponse } from "next/server";
 import db from "@/app/controllers/pgConnector";
 const { hash } = require("bcrypt");
 
-export default async function POST(request: Request) {
+export async function POST(request: Request) {
+  const client = await db.pool.connect();
   try {
-    const client = await db.pool.connect();
     const { name, email, password, phone_number } = await request.json();
-    const hashedPassword = await hash(password);
-    const { rows } = await client.query(`INSERT INTO users (1$, $2, $3, $4)`, [
-      name,
-      email,
-      hashedPassword,
-      phone_number,
-    ]);
-    console.log(rows);
+    const hashedPassword = await hash(password, 10);
+    const { rows } = await client.query(
+      `INSERT INTO users (name, email, password, phone_number, active, role_id) VALUES ($1, $2, $3, $4, $5, $6)`,
+      [name, email, hashedPassword, phone_number, false, 1]
+    );
+    console.log({ rows });
+    return NextResponse.json({ message: "successfully created new user" });
   } catch (err) {
     console.error(err);
-    throw new Error({ error: error.message });
+    return NextResponse.json({ message: "error registering new user" });
   } finally {
     await client.release();
   }
