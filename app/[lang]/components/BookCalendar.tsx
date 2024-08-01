@@ -21,15 +21,16 @@ import {
   MenuItem,
 } from "@mui/material";
 import { getDictionary } from "@/get-dictionaries";
+import { Locale } from "@/i18n-config";
 
 type Slot = {
   slot_start: string;
   slot_end: string;
 };
 
-export default function Calendar() {
-  const currentLang = usePathname().split("/")[1];
-  const dictionary = getDictionary(currentLang);
+export default function Calendar({ lang }: { lang: Locale }) {
+  // probably just pass lang down component chain
+  const dictionary = getDictionary(lang);
 
   const [date, setDate] = useState<string | null>(
     new Date().toISOString().split("T")[0]
@@ -100,10 +101,7 @@ export default function Calendar() {
 
   return (
     <>
-      <LocalizationProvider
-        dateAdapter={AdapterDayjs}
-        adapterLocale={currentLang}
-      >
+      <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={lang}>
         <Box display="flex" flexDirection="column" alignItems="center">
           <Box sx={{ pb: 5 }}>
             <Typography variant="h5">{dictionary["calendar"].title}</Typography>

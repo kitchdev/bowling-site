@@ -12,7 +12,8 @@ export const EmailTemplate: React.FC<Readonly<EmailTemplateProps>> = ({
   <div>
     <h3>Welcome, {name}!</h3>
     <p>
-      Please activate your account at Valois Bowling by clicking this link:
+      Please activate your account at Valois Bowling by clicking this link with
+      24hrs:
       {process.env.HOMEPAGE_URL}api/activate/{activateToken}
     </p>
   </div>
