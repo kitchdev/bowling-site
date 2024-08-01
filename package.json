@@ -13,6 +13,7 @@
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@formatjs/intl-localematcher": "^0.5.4",
+    "@hookform/resolvers": "^3.9.0",
     "@mui/icons-material": "^5.15.19",
     "@mui/material": "^5.15.19",
     "@mui/x-date-pickers": "^7.10.0",
@@ -27,10 +28,14 @@
     "pg": "^8.12.0",
     "react": "^18",
     "react-dom": "^18",
+    "react-hook-form": "^7.52.1",
     "react-hot-toast": "^2.4.1",
-    "react-window": "^1.8.10"
+    "react-window": "^1.8.10",
+    "resend": "^3.5.0",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/node": "^20.14.10",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18",

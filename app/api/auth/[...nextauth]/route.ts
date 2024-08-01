@@ -1,6 +1,6 @@
 import NextAuth, { type NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import db from "@/app/[lang]/controllers/pgConnector";
+import db from "@/app/controllers/pgConnector";
 import { compare } from "bcrypt";
 
 export const authOptions: NextAuthOptions = {
@@ -17,6 +17,8 @@ export const authOptions: NextAuthOptions = {
 
         try {
           const { email, password } = credentials ?? {};
+          console.log(typeof password);
+          console.log(email, password);
           if (!email || !password) {
             throw new Error("Missing username or password");
           }

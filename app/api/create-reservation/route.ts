@@ -1,9 +1,9 @@
 // pages/api/create-reservation.ts
 import { NextApiRequest, NextApiResponse } from "next";
 import { NextRequest, NextResponse } from "next/server";
-import db from "@/app/[lang]/controllers/pgConnector";
-import isDateBlocked from "@/app/[lang]/helpers/isDateBlocked";
-import addMinutesToTimeString from "@/app/[lang]/helpers/addMinutesToTimeString";
+import db from "@/app/controllers/pgConnector";
+import isDateBlocked from "@/app/helpers/isDateBlocked";
+import addMinutesToTimeString from "@/app/helpers/addMinutesToTimeString";
 
 export async function POST(req: NextApiRequest) {
   // console.log("-=-=-=-=--=-=", req.formData());

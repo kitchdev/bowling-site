@@ -5,5 +5,10 @@
   "appBar": {
     "reserve": "Reserve Today",
     "home": "Home"
+  },
+  "calendar": {
+    "title": "Lane Reservation Calendar",
+    "timeDropDown": "How many lanes (Max 5 per)",
+    "tileSlots": " Time slots available"
   }
 }

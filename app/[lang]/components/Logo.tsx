@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import logo from "@/public/bowlingLogo.svg";
 
 export default function Logo({
   width,
@@ -9,16 +10,6 @@ export default function Logo({
   height: number;
 }) {
   return (
-    <Image
-      src="/logo.jpg"
-      width={width}
-      height={height}
-      alt="SWA logo"
-      style={{
-        width: "auto",
-        height: "auto",
-      }}
-      priority
-    />
+    <Image src={logo} width={width} height={height} alt="SWA logo" priority />
   );
 }

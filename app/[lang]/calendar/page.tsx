@@ -9,10 +9,9 @@ const CalendarPage: React.FC = async () => {
     return <Login />;
   }
   return (
-    <div>
-      <h1>Lane Reservation Calendar</h1>
+    <>
       <BookingCalendar />
-    </div>
+    </>
   );
 };
 
