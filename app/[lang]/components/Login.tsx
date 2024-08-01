@@ -104,7 +104,7 @@ export default function Login() {
           <Typography pb={5}>
             <Link href="#">Forgot password?</Link>
           </Typography>
-          <Typography>Don't have an account?</Typography>
+          <Typography>{`Don't have an account?`}</Typography>
           <Link align="center" href="register">
             Sign Up
           </Link>

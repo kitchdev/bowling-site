@@ -11,12 +11,21 @@ import {
   InputAdornment,
   Paper,
   TextField,
+  Typography,
 } from "@mui/material";
 import LoadingDots from "@/app/[lang]/components/LoadingDots";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+
+type FormValues = {
+  name: string;
+  email: string;
+  password: string;
+  cpassword: string;
+  phone_number: string;
+};
 
 export default function Register() {
   const [loading, setLoading] = useState(false);
@@ -31,7 +40,7 @@ export default function Register() {
     /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
   const formSchema = Yup.object().shape({
-    email: Yup.string().required("Email is required"),
+    email: Yup.string().email().required("Email is required"),
     password: Yup.string()
       .required("Password is required")
       .min(4, "Password length should be at least 4 characters")
@@ -54,17 +63,18 @@ export default function Register() {
     formState: { errors },
     watch,
     reset,
-  } = useForm({
+  } = useForm<FormValues>({
     mode: "onTouched",
     resolver: yupResolver(formSchema),
   });
   password = watch("password", "");
 
   const handleFormSubmit = async (formData: any) => {
+    let response: any;
     const { name, email, password, phone_number } = formData;
     setLoading(true);
     try {
-      const response = await fetch("/api/auth/register", {
+      response = await fetch("/api/auth/register", {
         method: "POST",
         body: JSON.stringify({
           name,
@@ -73,12 +83,19 @@ export default function Register() {
           phone_number,
         }),
       });
-      console.log(response);
-      toast("User successfully created");
-      router.push("/");
     } catch (err: unknown) {
       console.log(err);
-      toast(err.message);
+      toast(err);
+    }
+    if (response?.ok) {
+      const data = await response.json();
+      toast.success("user successfully created");
+      router.push("/");
+    } else {
+      const errMessage = await response?.json();
+      console.error(`error code: ${response?.status}`);
+      toast.error(errMessage.error);
+      setLoading(false);
       reset();
     }
   };
@@ -119,7 +136,7 @@ export default function Register() {
     >
       <Paper align="center" elevation={10} style={paperStyle}>
         <Grid item xs={4} md={10} pb={1}>
-          <h2>Register</h2>
+          <h2>Sign up with Valois Bowling</h2>
           <TextField
             label="Email"
             placeholder="Enter email"
@@ -127,6 +144,8 @@ export default function Register() {
             type="email"
             fullWidth
             required
+            error={!!errors.email}
+            helperText={errors.email?.message}
             {...register("email")}
           >
             Email
@@ -197,6 +216,8 @@ export default function Register() {
             type="text"
             fullWidth
             required
+            error={!!errors.name}
+            helperText={errors.name?.message}
             {...register("name")}
           >
             Name
@@ -210,13 +231,15 @@ export default function Register() {
             type="text"
             fullWidth
             required
+            error={!!errors.phone_number}
+            helperText={errors.phone_number?.message}
             {...register("phone_number")}
           >
             Phone Number
           </TextField>
         </Grid>
 
-        <Box>
+        <Grid xs={4} md={10} pt={3}>
           <Button
             type="submit"
             color="primary"
@@ -227,7 +250,10 @@ export default function Register() {
           >
             {loading ? <LoadingDots /> : "Sumbit"}
           </Button>
-        </Box>
+          <Typography variant="caption" display="block">
+            A validation email will be sent to your newly registered user
+          </Typography>
+        </Grid>
       </Paper>
     </Grid>
   );
