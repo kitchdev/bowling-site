@@ -89,11 +89,10 @@ export default function Register() {
     }
     if (response?.ok) {
       const data = await response.json();
-      toast.success("user successfully created");
+      toast.success("user successfully created! please verify your email");
       router.push("/");
     } else {
       const errMessage = await response?.json();
-      console.log(errMessage);
       console.error(`error code: ${errMessage?.status || errMessage?.error}`);
       toast.error(errMessage?.error || errMessage);
       setLoading(false);
