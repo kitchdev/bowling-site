@@ -93,8 +93,9 @@ export default function Register() {
       router.push("/");
     } else {
       const errMessage = await response?.json();
-      console.error(`error code: ${response?.status}`);
-      toast.error(errMessage.error);
+      console.log(errMessage);
+      console.error(`error code: ${errMessage?.status || errMessage?.error}`);
+      toast.error(errMessage?.error || errMessage);
       setLoading(false);
       reset();
     }
@@ -135,7 +136,7 @@ export default function Register() {
       align="center"
     >
       <Paper align="center" elevation={10} style={paperStyle}>
-        <Grid item xs={4} md={10} pb={1}>
+        <Grid item xs={6} md={10} pb={1}>
           <h2>Sign up with Valois Bowling</h2>
           <TextField
             label="Email"
@@ -151,7 +152,7 @@ export default function Register() {
             Email
           </TextField>
         </Grid>
-        <Grid item xs={4} md={10} pb={1}>
+        <Grid item xs={6} md={10} pb={1}>
           <TextField
             label="Password"
             placeholder="Enter password"
@@ -180,7 +181,7 @@ export default function Register() {
             Password
           </TextField>
         </Grid>
-        <Grid item xs={4} md={10} pb={1}>
+        <Grid item xs={6} md={10} pb={1}>
           <TextField
             label="Verify Password"
             placeholder="Enter password"
@@ -208,7 +209,7 @@ export default function Register() {
             Password
           </TextField>
         </Grid>
-        <Grid item xs={4} md={10} pb={1}>
+        <Grid item xs={6} md={10} pb={1}>
           <TextField
             label="Name"
             placeholder="Enter name"
@@ -216,6 +217,7 @@ export default function Register() {
             type="text"
             fullWidth
             required
+            autoComplete="on"
             error={!!errors.name}
             helperText={errors.name?.message}
             {...register("name")}
@@ -223,7 +225,7 @@ export default function Register() {
             Name
           </TextField>
         </Grid>
-        <Grid item xs={4} md={10} pb={1}>
+        <Grid item xs={6} md={10} pb={1}>
           <TextField
             label="Phone"
             placeholder="Enter phone number"
@@ -231,6 +233,7 @@ export default function Register() {
             type="text"
             fullWidth
             required
+            autoComplete="on"
             error={!!errors.phone_number}
             helperText={errors.phone_number?.message}
             {...register("phone_number")}
@@ -239,7 +242,7 @@ export default function Register() {
           </TextField>
         </Grid>
 
-        <Grid xs={4} md={10} pt={3}>
+        <Grid xs={6} md={10} pt={3}>
           <Button
             type="submit"
             color="primary"

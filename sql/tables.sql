@@ -105,3 +105,13 @@ CREATE TABLE public.reservation_lanes (
 	CONSTRAINT reservation_lanes_lane_id_fkey FOREIGN KEY (lane_id) REFERENCES public.lanes(id),
 	CONSTRAINT reservation_lanes_reservation_id_fkey FOREIGN KEY (reservation_id) REFERENCES public.reservations(id)
 );
+
+create table activate_token (
+	id serial primary key,
+	token varchar(255) unique,
+	activated_at date,
+	created_at date not null default now(),
+	updated_at date,
+	user_id int not null,
+	foreign key (user_id) references users(id)
+);

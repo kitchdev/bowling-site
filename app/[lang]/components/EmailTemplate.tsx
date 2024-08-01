@@ -1,13 +1,19 @@
 import * as React from "react";
 
 interface EmailTemplateProps {
-  firstName: string;
+  name: string;
+  activateToken: string;
 }
 
 export const EmailTemplate: React.FC<Readonly<EmailTemplateProps>> = ({
-  firstName,
+  name,
+  activateToken,
 }) => (
   <div>
-    <h1>Welcome, {firstName}!</h1>
+    <h3>Welcome, {name}!</h3>
+    <p>
+      Please activate your account at Valois Bowling by clicking this link:
+      {process.env.HOMEPAGE_URL}api/activate/{activateToken}
+    </p>
   </div>
 );

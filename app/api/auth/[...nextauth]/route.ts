@@ -14,11 +14,9 @@ export const authOptions: NextAuthOptions = {
         credentials: Record<"email" | "password", string> | undefined
       ) {
         const client = await db.pool.connect();
-
+        // TODO make error messages coded for localization
         try {
           const { email, password } = credentials ?? {};
-          console.log(typeof password);
-          console.log(email, password);
           if (!email || !password) {
             throw new Error("Missing username or password");
           }
@@ -31,6 +29,10 @@ export const authOptions: NextAuthOptions = {
           if (!user || !(await compare(password, user.password))) {
             throw new Error("Invalid username or password");
           }
+          if (!user.active) {
+            throw new Error("Ensure that you verify your email address");
+          }
+
           return { id: user.id.toString(), email: user.email };
         } catch (error) {
           console.error(error);
