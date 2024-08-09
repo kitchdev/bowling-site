@@ -10,22 +10,17 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 export async function POST(request: Request) {
   const client = await db.pool.connect();
   try {
-    const { name, email, password, phone_number } = await request.json();
+    const { email } = await request.json();
     const checkUser = await client.query(
-      `SELECT id FROM users WHERE email = $1`,
+      `SELECT id, name FROM users WHERE email = $1`,
       [email]
     );
-    const userExists = checkUser.rows[0]?.id;
-    if (userExists) {
-      console.log("whoops user with this email already exists");
-      throw new Error("user already exists");
+    const userId = checkUser.rows[0]?.id;
+    if (!userId) {
+      console.log("whoops we can't find a user that matches this email");
+      throw new Error("Email doesn't match any users");
     }
-    const hashedPassword = await hash(password, 10);
-    const user = await client.query(
-      `INSERT INTO users (name, email, password, phone_number, active, role_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
-      [name, email, hashedPassword, phone_number, false, 1]
-    );
-    const userId = user.rows[0].id;
+    const name = checkUser.rows[0]?.name;
     // now create an activationToken
     const activateToken = `${randomUUID()}-${randomUUID()}`.replace(/-/g, "");
     const tokenRes = await client.query(
@@ -37,8 +32,8 @@ export async function POST(request: Request) {
     const { data, error } = await resend.emails.send({
       from: "Valois Bowling<onboarding@resend.dev>",
       to: [email],
-      subject: "Email Validation",
-      react: EmailTemplate({ name, activateToken, type: "register" }),
+      subject: "Password Reset",
+      react: EmailTemplate({ name, activateToken, type: "forgotpassword" }),
     });
 
     if (error) {

@@ -1,46 +1,48 @@
 "use client";
-import { useState, useRef } from "react";
-import { set, useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
 import {
   Box,
-  Button,
+  Checkbox,
+  FormControl,
+  FormControlLabel,
   Grid,
   IconButton,
   InputAdornment,
   Paper,
+  Avatar,
   TextField,
+  Button,
   Typography,
+  Link,
 } from "@mui/material";
+import React from "react";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { useState } from "react";
 import LoadingDots from "@/app/[lang]/components/LoadingDots";
+import toast from "react-hot-toast";
+import { useRouter, usePathname } from "next/navigation";
+import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 type FormValues = {
-  name: string;
-  email: string;
   password: string;
   cpassword: string;
-  phone_number: string;
 };
 
-export default function Register() {
+function ResetPassword() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showCpassword, setShowCpassword] = useState(false);
 
   const router = useRouter();
+  const path = usePathname();
+  const token = path.split("reset-password/")[1];
 
   let password: string;
 
-  const phoneRegExp =
-    /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
-
   const formSchema = Yup.object().shape({
-    email: Yup.string().email().required("Email is required"),
     password: Yup.string()
       .required("Password is required")
       .min(4, "Password length should be at least 4 characters")
@@ -50,11 +52,6 @@ export default function Register() {
       .min(4, "Password length should be at least 4 characters")
       .max(12, "Password cannot exceed more than 12 characters")
       .oneOf([Yup.ref("password")], "Passwords do not match"),
-    name: Yup.string().required("Name is required"),
-    phone_number: Yup.string().matches(
-      phoneRegExp,
-      "Phone number is not valid"
-    ),
   });
 
   const {
@@ -67,38 +64,8 @@ export default function Register() {
     mode: "onTouched",
     resolver: yupResolver(formSchema),
   });
-  password = watch("password", "");
 
-  const handleFormSubmit = async (formData: any) => {
-    let response: any;
-    const { name, email, password, phone_number } = formData;
-    setLoading(true);
-    try {
-      response = await fetch("/api/auth/register", {
-        method: "POST",
-        body: JSON.stringify({
-          name,
-          email,
-          password,
-          phone_number,
-        }),
-      });
-    } catch (err: unknown) {
-      console.log(err);
-      toast(err);
-    }
-    if (response?.ok) {
-      const data = await response.json();
-      toast.success("user successfully created! please verify your email");
-      router.push("/");
-    } else {
-      const errMessage = await response?.json();
-      console.error(`error code: ${errMessage?.status || errMessage?.error}`);
-      toast.error(errMessage?.error || errMessage);
-      setLoading(false);
-      reset();
-    }
-  };
+  password = watch("password", "");
 
   const handleClickShowPassword = (type: string) => {
     type === "password"
@@ -109,6 +76,35 @@ export default function Register() {
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
     event.preventDefault();
+  };
+
+  const handleFormSubmit = async (formData: FormValues) => {
+    let response: any;
+    setLoading(true);
+    const { password } = formData;
+    try {
+      response = await fetch("/api/auth/reset-password", {
+        method: "POST",
+        body: JSON.stringify({
+          token,
+          password,
+        }),
+      });
+    } catch (err: unknown) {
+      console.log(err);
+      toast(err);
+    }
+    if (response?.ok) {
+      const data = await response.json();
+      toast.success("Password successfully reset");
+      router.push("/");
+    } else {
+      const errMessage = await response?.json();
+      console.error(`error code: ${errMessage?.status || errMessage?.error}`);
+      toast.error(errMessage?.error || errMessage);
+      setLoading(false);
+      reset();
+    }
   };
 
   const paperStyle = {
@@ -127,35 +123,24 @@ export default function Register() {
         height: "36.5px",
       }
     : { margin: "8px 0" };
+
   return (
     <Grid
       container
       spacing={2}
       component="form"
-      onSubmit={handleSubmit(handleFormSubmit)}
       align="center"
+      onSubmit={handleSubmit(handleFormSubmit)}
     >
       <Paper align="center" elevation={10} style={paperStyle}>
         <Grid item xs={6} md={10} pb={1}>
           <Avatar style={avatarStyle}>
             <LockOutlinedIcon />
           </Avatar>
-          <h2>Sign up with Valois Bowling</h2>
-          <TextField
-            label="Email"
-            placeholder="Enter email"
-            variant="outlined"
-            type="email"
-            fullWidth
-            required
-            error={!!errors.email}
-            helperText={errors.email?.message}
-            {...register("email")}
-          >
-            Email
-          </TextField>
-        </Grid>
-        <Grid item xs={6} md={10} pb={1}>
+          <h2>Reset Password</h2>
+          <Typography variant="caption" display="block">
+            Please enter your new password
+          </Typography>
           <TextField
             label="Password"
             placeholder="Enter password"
@@ -213,40 +198,8 @@ export default function Register() {
           </TextField>
         </Grid>
         <Grid item xs={6} md={10} pb={1}>
-          <TextField
-            label="Name"
-            placeholder="Enter name"
-            variant="outlined"
-            type="text"
-            fullWidth
-            required
-            autoComplete="on"
-            error={!!errors.name}
-            helperText={errors.name?.message}
-            {...register("name")}
-          >
-            Name
-          </TextField>
-        </Grid>
-        <Grid item xs={6} md={10} pb={1}>
-          <TextField
-            label="Phone"
-            placeholder="Enter phone number"
-            variant="outlined"
-            type="text"
-            fullWidth
-            required
-            autoComplete="on"
-            error={!!errors.phone_number}
-            helperText={errors.phone_number?.message}
-            {...register("phone_number")}
-          >
-            Phone Number
-          </TextField>
-        </Grid>
-
-        <Grid xs={6} md={10} pt={3}>
           <Button
+            pb={5}
             type="submit"
             color="primary"
             variant="contained"
@@ -254,13 +207,12 @@ export default function Register() {
             style={btnstyle}
             fullWidth
           >
-            {loading ? <LoadingDots /> : "Sumbit"}
+            {loading ? <LoadingDots /> : "Submit"}
           </Button>
-          <Typography variant="caption" display="block">
-            A validation email will be sent to your newly registered user
-          </Typography>
         </Grid>
       </Paper>
     </Grid>
   );
 }
+
+export default ResetPassword;
