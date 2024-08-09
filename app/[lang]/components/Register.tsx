@@ -10,10 +10,12 @@ import {
   IconButton,
   InputAdornment,
   Paper,
+  Avatar,
   TextField,
   Typography,
 } from "@mui/material";
 import LoadingDots from "@/app/[lang]/components/LoadingDots";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Visibility from "@mui/icons-material/Visibility";

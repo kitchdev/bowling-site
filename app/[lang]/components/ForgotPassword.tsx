@@ -103,7 +103,7 @@ function ForgotPassword() {
           </Avatar>
           <h2>Forgot Password</h2>
           <Typography variant="caption" display="block">
-            Please enter your email, and we'll send you a reset password link
+            {`Please enter your email, and we'll send you a reset password link`}
           </Typography>
           <TextField
             label="Email"
