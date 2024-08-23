@@ -1,7 +1,7 @@
 import React from "react";
 import ResetPassword from "@/app/[lang]/components/ResetPassword";
 
-function page() {
+function page({ params: { lang } }: { params: { lang: Locale } }) {
   return <ResetPassword />;
 }
 

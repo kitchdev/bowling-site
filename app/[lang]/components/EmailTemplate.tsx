@@ -25,7 +25,7 @@ export const EmailTemplate: React.FC<Readonly<EmailTemplateProps>> = ({
       )}
       {type === "forgotpassword" && (
         <div>
-          <h3>Welcome, {name}!</h3>
+          <h3>Hello, {name}!</h3>
           <p>
             Please reset your password at Valois Bowling by clicking this link:
             {process.env.HOMEPAGE_URL}reset-password/{activateToken}

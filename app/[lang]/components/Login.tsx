@@ -29,7 +29,6 @@ export default function Login() {
   const { register, handleSubmit } = useForm();
 
   const handleFormSubmit = (formData: any) => {
-    console.log(typeof formData.password);
     setLoading(true);
     signIn("credentials", {
       redirect: false,
