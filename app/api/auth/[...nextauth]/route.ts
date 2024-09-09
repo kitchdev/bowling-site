@@ -25,9 +25,12 @@ export const authOptions: NextAuthOptions = {
             [email]
           );
           const user = rows[0];
+          if (!user) {
+            throw new Error("User not found");
+          }
           const compareRes = await compare(password, user.password);
-          if (!user || !(await compare(password, user.password))) {
-            throw new Error("Invalid username or password");
+          if (!compareRes) {
+            throw new Error("Invalid password");
           }
           if (!user.active) {
             throw new Error("Ensure that you verify your email address");
