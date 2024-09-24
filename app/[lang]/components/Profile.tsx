@@ -3,12 +3,6 @@
 import { Box, Typography, List, ListItem, Card } from "@mui/material";
 import { getServerSession } from "next-auth";
 
-const mockUserData = {
-  name: "Mat Kitching",
-  email: "gdsm.kitching",
-  phone: "514 502 1796",
-};
-
 export default function Profile({
   lang,
   session,
