@@ -3,7 +3,6 @@ import React from "react";
 import {
   Box,
   Checkbox,
-  FormControl,
   FormControlLabel,
   Grid,
   Paper,
@@ -20,8 +19,9 @@ import LoadingDots from "@/app/[lang]/components/LoadingDots";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { Locale } from "@/i18n-config";
 
-export default function Login() {
+export default function Login({ lang }: { lang: Locale }) {
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();

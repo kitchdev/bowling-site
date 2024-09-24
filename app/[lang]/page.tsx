@@ -16,7 +16,7 @@ export default async function Home({
   const dictionary = await getDictionary(lang);
 
   if (!session) {
-    return <Login />;
+    return <Login lang={lang} />;
   }
   return (
     <>
