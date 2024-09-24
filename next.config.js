@@ -1,7 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   env: {
-    NEXT_PUBLIC_API_URL: `http://${process.env.VERCEL_URL}/api`,
+    NEXT_PUBLIC_API_URL:
+      process.env.ENVIRONMENT === "production"
+        ? `https://${process.env.VERCEL_URL}/api`
+        : `http://${process.env.VERCEL_URL}/api`,
   },
   typescript: {
     ignoreBuildErrors: true,

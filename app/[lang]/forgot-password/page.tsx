@@ -1,8 +1,5 @@
-import React from "react";
+import ForgotPassword from "@/app/[lang]/components/ForgotPassword";
 
-function page({ params }) {
-  console.log(params);
-  return <div>{params.lang}</div>;
+export default function page({ params: { lang } }: { params: { lang: Locale } }) {
+  return <ForgotPassword />;
 }
-
-export default page;

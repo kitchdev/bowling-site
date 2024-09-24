@@ -29,7 +29,6 @@ export default function Login({ lang }: { lang: Locale }) {
   const { register, handleSubmit } = useForm();
 
   const handleFormSubmit = (formData: any) => {
-    console.log(typeof formData.password);
     setLoading(true);
     signIn("credentials", {
       redirect: false,
@@ -60,9 +59,15 @@ export default function Login({ lang }: { lang: Locale }) {
     : { margin: "8px 0" };
 
   return (
-    <Grid component="form" onSubmit={handleSubmit(handleFormSubmit)}>
-      <Paper elevation={10} style={paperStyle}>
-        <Grid align="center">
+    <Grid
+      container
+      spacing={2}
+      component="form"
+      align="center"
+      onSubmit={handleSubmit(handleFormSubmit)}
+    >
+      <Paper align="center" elevation={10} style={paperStyle}>
+        <Grid item xs={6} md={10} pb={1}>
           <Avatar style={avatarStyle}>
             <LockOutlinedIcon />
           </Avatar>
@@ -75,6 +80,8 @@ export default function Login({ lang }: { lang: Locale }) {
             required
             {...register("email")}
           />
+        </Grid>
+        <Grid item xs={6} md={10} pb={1}>
           <TextField
             label="Password"
             placeholder="Enter password"
@@ -85,31 +92,34 @@ export default function Login({ lang }: { lang: Locale }) {
             {...register("password")}
           />
         </Grid>
-        <FormControlLabel
-          control={<Checkbox name="checkedB" color="primary" />}
-          label="Remember me"
-        />
-        <Button
-          pb={5}
-          type="submit"
-          color="primary"
-          variant="contained"
-          disabled={loading}
-          style={btnstyle}
-          fullWidth
-        >
-          {loading ? <LoadingDots /> : "Sign In"}
-        </Button>
-        <Box align="center">
-          <Typography pb={5}>
-            <Link href="#">Forgot password?</Link>
-          </Typography>
-          <Typography>{`Don't have an account?`}</Typography>
-          {/* this needs to be localized, to function with /en/ /fr/ */}
-          <Link align="center" href={`/${lang}/register`}>
-            Sign Up
-          </Link>
-        </Box>
+        <Grid item xs={6} md={10} pb={1}>
+          <FormControlLabel
+            control={<Checkbox name="checkedB" color="primary" />}
+            label="Remember me"
+          />
+          <Button
+            pb={5}
+            type="submit"
+            color="primary"
+            variant="contained"
+            disabled={loading}
+            style={btnstyle}
+            fullWidth
+          >
+            {loading ? <LoadingDots /> : "Sign In"}
+          </Button>
+        </Grid>
+        <Grid item xs={6} md={10} pb={1}>
+          <Box align="center">
+            <Typography pb={5}>
+              <Link href="/forgot-password">Forgot password?</Link>
+            </Typography>
+            <Typography>{`Don't have an account?`}</Typography>
+            <Link align="center" href="register">
+              Sign Up
+            </Link>
+          </Box>
+        </Grid>
       </Paper>
     </Grid>
   );

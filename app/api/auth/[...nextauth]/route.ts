@@ -25,15 +25,24 @@ export const authOptions: NextAuthOptions = {
             [email]
           );
           const user = rows[0];
+          if (!user) {
+            throw new Error("User not found");
+          }
           const compareRes = await compare(password, user.password);
-          if (!user || !(await compare(password, user.password))) {
-            throw new Error("Invalid username or password");
+          if (!compareRes) {
+            throw new Error("Invalid password");
           }
           if (!user.active) {
             throw new Error("Ensure that you verify your email address");
           }
-
-          return { id: user.id.toString(), email: user.email };
+          const dbUser = {
+            id: user.id.toString(),
+            email: user.email,
+            name: user.name,
+            phone_number: user.phone_number,
+            role: user.role_id,
+          };
+          return dbUser;
         } catch (error) {
           console.error(error);
           throw new Error(error.message);
@@ -43,6 +52,28 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
+  session: {
+    strategy: "jwt",
+    maxAge: 60 * 60 * 24, // Max Age set to 1 day
+  },
+  callbacks: {
+    jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.phone = user.phone_number;
+        token.role = user.role;
+      }
+      return token;
+    },
+    session({ session, token }) {
+      if (token) {
+        session.user.id = token.id;
+        session.user.phone = token.phone;
+        session.user.role = token.role;
+      }
+      return session;
+    },
+  },
 };
 
 const handler = NextAuth(authOptions);

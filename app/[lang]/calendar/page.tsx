@@ -5,7 +5,7 @@ import Login from "@/app/[lang]/components/Login";
 import { Locale } from "@/i18n-config";
 
 const CalendarPage: React.FC = async ({
-  params,
+  params: { lang },
 }: {
   params: { lang: Locale };
 }) => {

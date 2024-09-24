@@ -1,15 +1,21 @@
-import React from "react";
 import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import Profile from "@/app/[lang]/components/Profile";
 import Login from "@/app/[lang]/components/Login";
-const ProfilePage: React.FC = async () => {
-  const session = await getServerSession();
+import { Locale } from "@/i18n-config";
+
+const ProfilePage: React.FC = async ({
+  params: { lang },
+}: {
+  params: { lang: Locale };
+}) => {
+  const session = await getServerSession(authOptions);
   if (!session) {
     return <Login />;
   }
   return (
     <>
-      <Profile />
+      <Profile lang={lang} session={session} />
     </>
   );
 };
